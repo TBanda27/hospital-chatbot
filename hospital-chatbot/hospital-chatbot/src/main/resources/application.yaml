@@ -1,3 +1,12 @@
 spring:
   application:
     name: hospital-chatbot
+
+logging:
+  level:
+    root: INFO
+    com.banda.hospital chatbot: DEBUG
+
+server:
+    port: 8080
+

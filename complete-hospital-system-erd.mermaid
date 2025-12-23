@@ -1,0 +1,124 @@
+erDiagram
+    %% Medical Services & Appointments
+    DOCTOR ||--o{ DOCTOR_SERVICE : offers
+    SERVICE ||--o{ DOCTOR_SERVICE : "priced by"
+    DOCTOR ||--o{ APPOINTMENT : "provides care in"
+    PATIENT ||--o{ APPOINTMENT : books
+    SERVICE ||--o{ APPOINTMENT : "booked for"
+    
+    %% Conversation State
+    PATIENT ||--o| CONVERSATION_STATE : "has current state"
+    DOCTOR ||--o| CONVERSATION_STATE : "selected in"
+    SERVICE ||--o| CONVERSATION_STATE : "selected in"
+    
+    %% Hospital Information (no direct relationships, standalone reference data)
+    HOSPITAL_INFO ||--o{ FACILITY : "contains"
+    HOSPITAL_INFO ||--o{ CAMPAIGN : "runs"
+
+    DOCTOR {
+        bigint id PK
+        varchar name
+        varchar specialization
+        varchar location
+        varchar operating_hours
+        varchar phone_number
+        boolean is_available
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    SERVICE {
+        bigint id PK
+        varchar service_name "Medical service name"
+        text description
+        timestamp created_at
+    }
+
+    DOCTOR_SERVICE {
+        bigint id PK
+        bigint doctor_id FK
+        bigint service_id FK
+        decimal price
+        boolean is_available
+        timestamp created_at
+    }
+
+    PATIENT {
+        bigint id PK
+        varchar phone_number UK "WhatsApp number"
+        varchar name
+        timestamp created_at
+    }
+
+    CONVERSATION_STATE {
+        bigint id PK
+        varchar patient_phone_number UK
+        varchar current_step "MAIN_MENU, CHOOSING_DOCTOR, etc"
+        bigint selected_doctor_id FK
+        bigint selected_service_id FK
+        text context_data "JSON for extra state"
+        timestamp last_updated
+    }
+
+    APPOINTMENT {
+        bigint id PK
+        bigint patient_id FK
+        bigint doctor_id FK
+        bigint service_id FK
+        date appointment_date
+        time appointment_time
+        varchar status "PENDING, CONFIRMED, CANCELLED"
+        decimal total_price
+        text notes
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    HOSPITAL_INFO {
+        bigint id PK
+        varchar hospital_name
+        text address
+        varchar phone_number
+        varchar email
+        time opening_time
+        time closing_time
+        varchar emergency_contact
+        varchar website
+        text google_maps_link
+        timestamp updated_at
+    }
+
+    FACILITY {
+        bigint id PK
+        bigint hospital_id FK
+        varchar facility_name "Pharmacy, Lab, Ambulance"
+        text description
+        boolean is_available
+        varchar operating_hours
+        varchar contact_number
+        varchar location_details
+        timestamp created_at
+    }
+
+    CAMPAIGN {
+        bigint id PK
+        bigint hospital_id FK
+        varchar campaign_name
+        text description
+        date start_date
+        date end_date
+        boolean is_active
+        varchar target_group
+        text requirements
+        timestamp created_at
+    }
+
+    FAQ {
+        bigint id PK
+        varchar question
+        text answer
+        varchar category "PAYMENT, VISITING, SERVICES, GENERAL"
+        text keywords "for search"
+        int display_order
+        timestamp created_at
+    }

@@ -1,6 +1,7 @@
 package com.banda.hospital_chatbot.controller;
 
 import com.banda.hospital_chatbot.entity.HospitalInfo;
+import com.banda.hospital_chatbot.service.FAQService;
 import com.banda.hospital_chatbot.service.HospitalService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class WhatsAppWebHookController {
 
     private final HospitalService hospitalService;
+    private final FAQService faqService;
 
-    public WhatsAppWebHookController(HospitalService hospitalService) {
+    public WhatsAppWebHookController(HospitalService hospitalService, FAQService faqService) {
         this.hospitalService = hospitalService;
+        this.faqService = faqService;
     }
 
     @PostMapping(value = "/whatsapp", produces = MediaType.APPLICATION_XML_VALUE)
@@ -42,8 +45,8 @@ public class WhatsAppWebHookController {
                 HospitalInfo hospitalInfo = hospitalService.getHospitalInfo();
                 responseMessage = hospitalInfo != null ? hospitalInfo.toString() : "Hospital information is currently unavailable.";
             }
-            else if(trimmedBody.equals("3")){
-                responseMessage = "Coming Soon: \n" + getMainMenu();
+            else if(trimmedBody.equals("6")){
+                responseMessage = faqService.formatCategoryMenu();
             }
             else{
                 responseMessage = "Invalid Option: Please select a valid option.\n\n" + getMainMenu();
@@ -61,11 +64,14 @@ public class WhatsAppWebHookController {
     }
 
     private String getMainMenu(){
-        return "🏥 Welcome to Hospital Chatbot\n\n" +
+        return "🏥 *Welcome to Harare Hospital Chatbot*\n\n" +
                 "Please select an option:\n" +
                 "1️⃣ Book Appointment\n" +
                 "2️⃣ Hospital Information\n" +
-                "3️⃣ Services & Facilities\n\n" +
+                "3️⃣ Services & Facilities\n" +
+                "4️⃣ Emergency Contact\n" +
+                "5️⃣ Current Campaigns\n" +
+                "6️⃣ FAQs\n\n" +
                 "Reply with the number of your choice.";
     }
 

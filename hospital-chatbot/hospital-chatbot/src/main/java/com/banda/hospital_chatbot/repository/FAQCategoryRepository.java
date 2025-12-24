@@ -8,4 +8,5 @@ import java.util.List;
 public interface FAQCategoryRepository extends JpaRepository<FAQCategory, Long> {
 
     List<FAQCategory> findAllByOrderByDisplayOrderAsc();
+
 }

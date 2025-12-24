@@ -30,13 +30,31 @@ public class FAQService {
     public String formatCategoryMenu(){
         List<FAQCategory> categories = getAllFAQCategories();
         StringBuilder menu = new StringBuilder("Please select a category:\n\n");
+        int displayNumber = 1;
         for (FAQCategory category : categories) {
-            menu.append(getNumberEmoji(category.getDisplayOrder()))
+            menu.append(getNumberEmoji(displayNumber))
                 .append(category.getCategoryName())
                 .append("\n");
+            displayNumber++;
         }
-        menu.append("\nReply with the category number:\n");
+        menu.append("\n0️⃣ Back to Main Menu");
         return menu.toString();
+    }
+
+    public FAQCategory getFAQCategoryByMenuPosition(int choice) {
+        List<FAQCategory> categories = getAllFAQCategories();
+        if(choice < 1 || choice>categories.size()){
+            return null;
+        }
+        return categories.get(choice -1 );
+    }
+
+    public FAQ getFAQById(Long faqId) {
+        return faqRepository.findById(faqId).orElse(null);
+    }
+
+    public List<FAQ> getFAQByCategoryID(Long categoryId){
+        return faqRepository.findByCategoryIdOrderByDisplayOrderAsc(categoryId);
     }
 
     public String formatFAQList(Long categoryId){
@@ -53,16 +71,33 @@ public class FAQService {
                 .append(category.getCategoryName())
                 .append("*\n\n");
 
+        int displayNumber = 1;
         for (FAQ faq : faqs) {
-            list.append(getNumberEmoji(faq.getDisplayOrder()))
+            list.append(getNumberEmoji(displayNumber))
                 .append(faq.getQuestion())
                 .append("\n");
+            displayNumber++;
         }
-        list.append("\nReply with the question number.\n");
+        list.append("\n0️⃣ Back to Categories");
         return list.toString();
-
     }
 
+    public String formatFAQAnswer(FAQ faq) {
+        if (faq == null) {
+            return "FAQ not found.";
+        }
+
+        StringBuilder answer = new StringBuilder();
+        answer.append("❓ *Question:* ")
+                .append(faq.getQuestion())
+                .append("\n\n");
+
+        answer.append("💬 *Answer:*\n")
+                .append(faq.getAnswer())
+                .append("\n\n");
+        answer.append("0️⃣ Back to Questions");
+        return answer.toString();
+    }
 
     private String getNumberEmoji(int number){
         return switch (number) {

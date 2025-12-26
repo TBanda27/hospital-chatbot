@@ -41,14 +41,14 @@ public class ConversationStateService {
         conversationStateRepository.deleteById(phoneNumber);
     }
 
-    @Scheduled(fixedRate = 3600000) // Every hour
-    public void cleanupOldStates(){
-        LocalDateTime now = LocalDateTime.now().minusHours(1);
-        int deletedCount = conversationStateRepository.deleteByLastUpdatedBefore(now);
-
-        if(deletedCount > 0){
-            System.out.printf("Cleaned up %d old conversation states.%n", deletedCount);
-        }
-    }
+//    @Scheduled(fixedRate = 3600000) // Every hour
+//    public void cleanupOldStates(){
+//        LocalDateTime now = LocalDateTime.now().minusHours(1);
+//        int deletedCount = conversationStateRepository.deleteByLastUpdatedBefore(now);
+//
+//        if(deletedCount > 0){
+//            System.out.printf("Cleaned up %d old conversation states.%n", deletedCount);
+//        }
+//    }
 
 }
